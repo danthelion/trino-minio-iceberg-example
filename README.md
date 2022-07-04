@@ -2,19 +2,6 @@
 docker-compose up
 ```
 
-# Configure s3cmd with Minio
-
-```shell
-s3cmd --config minio.s3cfg --configure
-```
-
-# Load data into minio
-
-```shell
-s3cmd --config minio.s3cfg mb s3://iris
-s3cmd --config minio.s3cfg put data/iris.parq s3://iris
-```
-
 # Run Trino
 
 ```shell

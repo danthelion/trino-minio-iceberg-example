@@ -46,7 +46,7 @@ services:
     ports:
       - "9001:9001"
       - "9000:9000"
-    command: ["server", "/data", "--console-address", ":9001"]
+    command: [ "server", "/data", "--console-address", ":9001" ]
     volumes:
       - minio-data:/data
     environment:
@@ -57,7 +57,7 @@ services:
     networks:
       - trino
 
-  # To create default bucket
+  # To Create Minio bucket and upload iris parquet file.
   mc:
     depends_on:
       - minio
@@ -66,13 +66,16 @@ services:
     entrypoint: >
       /bin/sh -c "
       until (/usr/bin/mc config host add minio http://minio:9000 minio minio123) do echo '...waiting...' && sleep 1; done;
-      /usr/bin/mc rm -r --force minio/warehouse;
-      /usr/bin/mc mb minio/warehouse;
-      /usr/bin/mc policy set public minio/warehouse;
+      /usr/bin/mc rm -r --force minio/iris;
+      /usr/bin/mc mb minio/iris;
+      /usr/bin/mc policy set public minio/iris;
+      /usr/bin/mc cp /data/iris.parq minio/iris/iris.parq;
       exit 0;
       "
     networks:
       - trino
+    volumes:
+      - ./data/iris.parq:/data/iris.parq
 
 volumes:
   minio-data:
